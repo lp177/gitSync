@@ -1,5 +1,5 @@
 #Url of my repository
-myGit="https://github.com/lp177/42.git"
+myGit="https://github.com/myID/Mygit.git"
 #Command sh execute previous the push
 previousSync="cp ~/.zshrc ~/ExtSync/;cp ~/.vimrc ~/ExtSync/;git add -f .vimrc .zshrc"
 
