@@ -1,12 +1,12 @@
 #Url of my repository
 myGit="https://github.com/myID/Mygit.git"
-#Command sh execute previous the push
-previousSync="cp ~/.zshrc ~/ExtSync/;cp ~/.vimrc ~/ExtSync/;git add -f .vimrc .zshrc"
 
 #Dir wanted for Sync
 dirSync="Sync"
 #Dir target for temporary storage
 tmpSync="ExtSync"
+#Command sh execute previous the push
+previousSync="cp ~/.zshrc ~/$tmpSync/;cp ~/.vimrc ~/$tmpSync/;git add -f .vimrc .zshrc"
 
 mkdir ~/$dirSync ~/$tmpSync &> /dev/null
 cd ~/$tmpSync
