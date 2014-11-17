@@ -20,5 +20,5 @@ alias gitSync="Sync177;Sync177"
 alias gitReset="cd ~/$tmpSync;git pull;git pull origin master;git pull;git commit -am \"reset\";git push origin master;git rm -rf *;rm -rf *;git push origin master;cd -;gitSync"
 #Git reset is the power to impose the respect of your repository at the scope of all, use this warm with abuse
 
-#New stuff? and you haven't your local files for sync or just an obsolet copy ? Take your git with gitTake guy!
+#New stuff? and you haven't your local files for sync or just an duty obsolet copy ? Take your git with gitTake guy!
 alias gitTake="rm -rf ~/$tmpSync ~/$dirSync;git clone $myGit ~/$tmpSync;cp -R ~/$tmpSync ~/$dirSync"
