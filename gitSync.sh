@@ -40,4 +40,4 @@ alias gitReset="cd ~/$tmpSync;git pull;git pull origin master;git pull;git commi
 #Git reset is the power to impose the respect of your repository at the scope of all, use this warm with abuse
 
 #Launch auto gitSync all interval_auto_sync seconde(s) (not require cron)
-alias gitAutoSync="echo \"Start at: \";date;gitSync;sleep $interval_auto_sync;clear;source ~/cron_GitSync_177"
+alias gitAutoSync="echo \"Start at: \";date;echo \"\n\";gitSync;echo -n \"\n\nPending next interval...\";sleep $interval_auto_sync;clear;source ~/cron_GitSync_177"
