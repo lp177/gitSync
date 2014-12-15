@@ -1,10 +1,10 @@
 #Url of my repository
 myGit="https://github.com/myID/Mygit.git"
 
-#Dir wanted for Sync
+#Dir wanted for Sync (From ~)
 dirSync="Sync"
 
-#Dir target for temporary storage
+#Dir target for temporary storage (From ~)
 tmpSync="ExtSync"
 
 #Command sh execute previous the push
