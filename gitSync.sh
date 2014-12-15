@@ -14,8 +14,10 @@ previousSync="cp ~/.zshrc ~/$tmpSync/;cp ~/.vimrc ~/$tmpSync/;git add -f .vimrc 
 dirSync="Sync"
 #Dir target for temporary storage
 tmpSync="ExtSync"
-#Command sh execute previous the push
+#Command sh execute previous the push (gitSync)
 previousSync="cp -R ~/.vim ~/$tmpSync/vim;cp ~/.zshrc ~/$tmpSync/zshrc;cp ~/.vimrc ~/$tmpSync/vimrc;git add -f vimrc zshrc;cp ~/cron_GitSync_177 ~/$tmpSync"
+#Command sh execute after the incoming clone (gitTake)
+afterTake="chmod 755 ~/.zshrc ~/.vimrc;cat ~/$dirSync/zshrc > ~/.zshrc;cat ~/$dirSync/vimrc > ~/.vimrc"
 #interval in second into two auto sync (after launch cmd gitAutoSync)
 interval_auto_sync="600"
 
@@ -26,7 +28,7 @@ git init &> /dev/null && git remote add origin $myGit &> /dev/null
 cd -
 
 #New stuff? and you haven't your local files for sync or just an duty obsolet copy ? Take your git with gitTake guy!
-alias gitTake="rm -rf ~/$tmpSync ~/$dirSync;git clone $myGit ~/$tmpSync;cp -R ~/$tmpSync ~/$dirSync"
+alias gitTake="rm -rf ~/$tmpSync ~/$dirSync;git clone $myGit ~/$tmpSync;cp -R ~/$tmpSync ~/$dirSync;$afterTake;"
 
 alias Sync177="cd ~/$tmpSync;diff -qr ~/$dirSync ~/$tmpSync | grep 'Only.*$tmpSync' | sed 's/Only.*$tmpSync: //' | sed '/.git/d' | xargs git rm -rf --ignore-unmatch;rsync -r ~/$dirSync/* --delete ~/$tmpSync;find */ -name .git | sed 's/\/\//\//' | xargs git rm -rf;find */ -name .git | sed 's/\/\//\//' | xargs rm -rf;$previousSync;git add ./*;git commit -am 'Update `date`';git push origin master;cd -"
 alias gitSync="Sync177;Sync177"
