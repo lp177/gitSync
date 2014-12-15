@@ -19,7 +19,7 @@ previousSync="cp -R ~/.vim ~/$tmpSync/vim;cp ~/.zshrc ~/$tmpSync/zshrc;cp ~/.vim
 #interval in second into two auto sync (after launch cmd gitAutoSync)
 interval_auto_sync="600"
 
-echo "gitAutoSync" > ~/cron_GitSync177
+echo "gitAutoSync" > ~/cron_GitSync_177
 mkdir ~/$dirSync ~/$tmpSync &> /dev/null
 cd ~/$tmpSync
 git init &> /dev/null && git remote add origin $myGit &> /dev/null
@@ -40,4 +40,4 @@ alias gitReset="cd ~/$tmpSync;git pull;git pull origin master;git pull;git commi
 #Git reset is the power to impose the respect of your repository at the scope of all, use this warm with abuse
 
 #Launch auto gitSync all interval_auto_sync seconde(s) (not require cron)
-alias gitAutoSync="echo \"Start at: \";date;sleep $interval_auto_sync;gitSync;source ~/cron_GitSync_177"
+alias gitAutoSync="echo \"Start at: \";date;gitSync;sleep $interval_auto_sync;clear;source ~/cron_GitSync_177"
