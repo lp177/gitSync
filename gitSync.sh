@@ -14,12 +14,14 @@ previousSync="cp ~/.zshrc ~/$tmpSync/;cp ~/.vimrc ~/$tmpSync/;git add -f .vimrc 
 dirSync="Sync"
 #Dir target for temporary storage
 tmpSync="ExtSync"
+#interval in second into two auto sync (after launch cmd gitAutoSync)
+interval_auto_sync="600"
 #Command sh execute previous the push (gitSync)
 previousSync="cp -R ~/.vim ~/$tmpSync/vim;cp ~/.zshrc ~/$tmpSync/zshrc;cp ~/.vimrc ~/$tmpSync/vimrc;git add -f vimrc zshrc;cp ~/cron_GitSync_177 ~/$tmpSync"
 #Command sh execute after the incoming clone (gitTake)
-afterTake="chmod 755 ~/.zshrc ~/.vimrc;cat ~/$dirSync/zshrc > ~/.zshrc;cat ~/$dirSync/vimrc > ~/.vimrc"
-#interval in second into two auto sync (after launch cmd gitAutoSync)
-interval_auto_sync="600"
+afterTake="ls $dirSync;"
+#Expl of auoload config with afterTake:
+#"chmod 755 ~/.zshrc ~/.vimrc;cat ~/$dirSync/zshrc > ~/.zshrc;cat ~/$dirSync/vimrc > ~/.vimrc"
 
 echo "gitAutoSync" > ~/cron_GitSync_177
 mkdir ~/$dirSync ~/$tmpSync &> /dev/null
