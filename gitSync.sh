@@ -15,7 +15,7 @@ dirSync="Sync"
 #Dir target for temporary storage
 tmpSync="ExtSync"
 #Command sh execute previous the push
-previousSync="cp -R ~/.vim ~/$tmpSync/vim;cp ~/.zshrc ~/$tmpSync/zshrc;cp ~/.vimrc ~/$tmpSync/vimrc;git add -f vimrc zshrc;cp ~/cron_GitSync ~/$tmpSync"
+previousSync="cp -R ~/.vim ~/$tmpSync/vim;cp ~/.zshrc ~/$tmpSync/zshrc;cp ~/.vimrc ~/$tmpSync/vimrc;git add -f vimrc zshrc;cp ~/cron_GitSync_177 ~/$tmpSync"
 #interval in second into two auto sync (after launch cmd gitAutoSync)
 interval_auto_sync="600"
 
