@@ -1,5 +1,3 @@
-#Url of my repository
-myGit="https://github.com/myID/Mygit.git"
 #Dir wanted for Sync
 dirSync="Sync"
 #Dir target for temporary storage
