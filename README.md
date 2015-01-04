@@ -7,7 +7,7 @@ Paste that in shell for a simply installation (after do replace https://github.c
 
 ```
 echo "myGit=\"https://github.com/myID/Mygit.git\"" > ~/gitSync.sh
-curl http://goo.gl/wE3fCg >> ~/gitSync.sh
+curl https://raw.githubusercontent.com/lp177/gitSync/master/gitSync.sh >> ~/gitSync.sh
 echo "\nsource ~/gitSync.sh" >> ~/.zshrc
 source ~/.zshrc
 ```
