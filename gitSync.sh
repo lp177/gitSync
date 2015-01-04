@@ -12,7 +12,7 @@ previousSync="
 	cp ~/.vimrc ~/$dirSync/vimrc;
 	cp ~/cron_ersatz_177 ~/$dirSync"
 #interval in second into two auto sync (after launch cmd gitAutoSync)
-interval_auto_sync=180
+interval_auto_sync=1200
 
 mkdir ~/$dirSync ~/$tmpSync &> /dev/null
 cd ~/$tmpSync
