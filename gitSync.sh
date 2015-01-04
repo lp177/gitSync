@@ -8,7 +8,7 @@ previousSync="
 cp -R ~/.vim ~/$dirSync/vim;
 cp ~/.zshrc ~/$dirSync/zshrc;
 cp ~/.vimrc ~/$dirSync/vimrc;
-cp ~/cron_ersatz_177 ~/$dirSync"
+cp ~/cron_ersatz ~/$dirSync"
 #interval in second into two auto sync (after launch cmd gitAutoSync)
 interval_auto_sync=60
 
