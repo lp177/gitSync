@@ -26,12 +26,9 @@ alias gitTake="
 	rm -rf ~/$dirSync/.git"
 alias gitSync="
 	cd ~/$tmpSync;
-	diff -qr ~/$dirSync ~/$tmpSync | grep 'Only.*$tmpSync' | 
-	sed 's/Only.*$tmpSync: //' | sed '/.git/d' | 
-	xargs git rm -rf --ignore-unmatch;
 	$previousSync;
 	rsync -r ~/$dirSync/* --delete ~/$tmpSync;
-	find */ -name .git | sed 's/\/\//\//' | xargs git rm -rf;
+	find */ -name .git | sed 's/\/\//\//' | xargs git rm -rf --ignore-unmatch;
 	find */ -name .git | sed 's/\/\//\//' | xargs rm -rf;
 	git add ./*;git commit -am 'Update `date`';git push origin master;cd -"
 
