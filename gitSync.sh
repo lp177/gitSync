@@ -51,7 +51,7 @@ alias gitAutoSync="
 	echo \"Pending next interval ...   ($((interval_auto_sync / 60))mn)\";
 	sleep $interval_auto_sync;
 	clear;
-	source ~/cron_ersatz_177
+	source ~/cron_ersatz
 "
 #Create ersatz of cron
 echo "source $HOME/gitSync.sh 2> /dev/null;\`gitAutoSync\`" > $HOME/cronErsatz
