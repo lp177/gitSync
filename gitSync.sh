@@ -10,7 +10,7 @@ previousSync="
 	cp -R ~/.vim ~/$dirSync/vim;
 	cp ~/.zshrc ~/$dirSync/zshrc;
 	cp ~/.vimrc ~/$dirSync/vimrc;
-	cp ~/cron_GitSync_177 ~/$dirSync"
+	cp ~/cron_ersatz_177 ~/$dirSync"
 #interval in second into two auto sync (after launch cmd gitAutoSync)
 interval_auto_sync=180
 
@@ -56,6 +56,7 @@ alias gitAutoSync="
 	echo \"Pending next interval ...   ($((interval_auto_sync / 60))mn)\";
 	sleep $interval_auto_sync;
 	clear;
-	source ~/cron_GitSync_177"
+	source ~/cron_ersatz_177"
 
-echo "source $HOME/.zshrc 2> /dev/null;\`gitAutoSync\`" > $HOME/cron_GitSync_177
+#Create ersatz of cron
+echo "source $HOME/.zshrc 2> /dev/null;\`gitAutoSync\`" > $HOME/cron_ersatz_177
