@@ -1,3 +1,4 @@
+myGit="https://github.com/[MyGitPseudo]/[MyRepository].git"
 #Dir wanted for Sync
 dirSync="Sync"
 #Dir target for temporary storage
@@ -5,44 +6,69 @@ tmpSync="ExtSync"
 #Command sh execute previous the push
 
 previousSync="
-cp -R ~/.vim ~/$dirSync/vim;
-cp ~/.zshrc ~/$dirSync/zshrc;
-cp ~/.vimrc ~/$dirSync/vimrc;
-cp ~/cronErsatz ~/$dirSync"
+	cp -R ~/.vim ~/$dirSync/vim;
+	cp ~/.zshrc ~/$dirSync/zshrc;
+	cp ~/.vimrc ~/$dirSync/vimrc;
+	cp ~/.cronErsatz ~/$dirSync
+	cp ~/.gitSync.sh ~/$dirSync
+"
 #interval in second into two auto sync (after launch cmd gitAutoSync)
 interval_auto_sync=60
 
+preserveHolder="
+	cat ~/gitSync.sh > ~/$dirSync/_gitSync.sh
+	cat ~/.zshrc > ~/$dirSync/_zshrc
+	cat ~/.vimrc > ~/$dirSync/_vimrc
+	rm -rf ~/$dirSync/_vim
+	cp -R ~/.vim ~/$dirSync/_vim
+"
+afterTake="$preserveHolder
+	rm -rf ~/.vim
+	cp -R ~/$dirSync/vim ~/.vim
+	cat ~/$dirSync/vimrc > ~/.vimrc
+	cat ~/$dirSync/zshrc > ~/.zshrc
+	cat ~/$dirSync/.gitSync.sh > ~/.gitSync.sh
+	source ~/.zshrc
+"
 mkdir ~/$dirSync ~/$tmpSync &> /dev/null
 cd ~/$tmpSync
 git init &> /dev/null && git remote add origin $myGit &> /dev/null
 cd -
 
-alias gs="gitSync"
 alias gitTake="
-rm -rf ~/$tmpSync ~/$dirSync;git clone $myGit ~/$tmpSync;
-cp -R ~/$tmpSync ~/$dirSync;
-rm -rf ~/$dirSync/.git"
+	rm -rf ~/$tmpSync ~/$dirSync
+	git clone $myGit ~/$tmpSync
+	cp -R ~/$tmpSync ~/$dirSync
+	rm -rf ~/$dirSync/.git
+"
+alias gitClean="
+	ssh-keygen -R $myGit
+	rm -rf ~/.ssh/known_hosts.old
+	rm -rf ~/$tmpSync ~/$dirSync
+"
 alias gitSync="
-cd ~/$tmpSync;
-$previousSync;
-rsync -r ~/$dirSync/* --delete ~/$tmpSync;
-find */ -name .git | sed 's/\/\//\//' | xargs git rm -rf --ignore-unmatch;
-find */ -name .git | sed 's/\/\//\//' | xargs rm -rf;
-git add ./*;git commit -am 'Update `date`';git push origin master;cd -"
+	cd ~/$tmpSync;
+	$previousSync;
+	rsync -r ~/$dirSync/* --delete ~/$tmpSync;
+	find */ -name .git | sed 's/\/\//\//' | xargs git rm -rf --ignore-unmatch;
+	find */ -name .git | sed 's/\/\//\//' | xargs rm -rf;
+	git add ./*;git commit -am 'Update `date`';git push origin master;cd -
+"
+alias gs="gitSync"
 
-#Rm all & push
+#Rm all & push (alternative for push -f)
 alias gitReset="
-cd ~/$tmpSync;
-git pull;
-git pull origin master;
-git pull;
-git commit -am \"reset\";
-git push origin master;
-git rm -rf *;rm -rf *;
-git push origin master;
-cd -;
-gitSync"
-
+	cd ~/$tmpSync;
+	git pull;
+	git pull origin master;
+	git pull;
+	git commit -am \"reset\";
+	git push origin master;
+	git rm -rf *;rm -rf *;
+	git push origin master;
+	cd -;
+	gitSync
+"
 #Launch auto gitSync all interval_auto_sync seconde(s) (not require cron)
 alias gitAutoSync="
 	echo \"Start at: \";date;echo \"\n\";
