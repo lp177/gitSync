@@ -1,3 +1,4 @@
+#Edit for point on your server/repository
 myGit="https://github.com/[MyGitPseudo]/[MyRepository].git"
 #Dir wanted for Sync
 dirSync="Sync"
