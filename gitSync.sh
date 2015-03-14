@@ -7,7 +7,6 @@ tmpSync="ExtSync"
 #Command sh execute previous the push
 
 previousSync="
-	cp -R ~/.vim ~/$dirSync/vim;
 	cp ~/.zshrc ~/$dirSync/zshrc;
 	cp ~/.vimrc ~/$dirSync/vimrc;
 	cp ~/.cronErsatz ~/$dirSync
@@ -21,11 +20,8 @@ preserveHolder="
 	cat ~/.zshrc > ~/$dirSync/_zshrc
 	cat ~/.vimrc > ~/$dirSync/_vimrc
 	rm -rf ~/$dirSync/_vim
-	cp -R ~/.vim ~/$dirSync/_vim
 "
 afterTake="$preserveHolder
-	rm -rf ~/.vim
-	cp -R ~/$dirSync/vim ~/.vim
 	cat ~/$dirSync/vimrc > ~/.vimrc
 	cat ~/$dirSync/zshrc > ~/.zshrc
 	cat ~/$dirSync/.gitSync.sh > ~/.gitSync.sh
@@ -50,9 +46,9 @@ alias gitClean="
 alias gitSync="
 	cd ~/$tmpSync;
 	$previousSync;
-	rsync -r ~/$dirSync/* --delete ~/$tmpSync;
-	find */ -name .git | sed 's/\/\//\//' | xargs git rm -rf --ignore-unmatch;
-	find */ -name .git | sed 's/\/\//\//' | xargs rm -rf;
+	rsync -rv ~/$dirSync/* --delete ~/$tmpSync;
+	find */ -name .git | sed 's/\/\//\//' | xargs git rm -rvf --ignore-unmatch;
+	find */ -name .git | sed 's/\/\//\//' | xargs rm -rfv;
 	git add ./*;git commit -am 'Update `date`';git push origin master;cd -
 "
 alias gs="gitSync"
