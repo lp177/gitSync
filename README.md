@@ -3,7 +3,7 @@ gitSync
 
 Sync a dir with many git project in alone repository in one commande
 
-Paste that in shell for a simply installation (after do replace https://github.com/myID/MyGitRepo.git with your repo):
+Paste that in a shell for a simply installation (after do replace https://github.com/myID/MyGitRepo.git with your repository):
 
 ```
 echo "myGit=\"https://github.com/myID/MyGitRepo.git\"" > ~/.gitSync.sh &&
