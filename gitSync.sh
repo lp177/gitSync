@@ -27,11 +27,13 @@ afterTake="$preserveHolder
 	cat ~/$dirSync/.gitSync.sh > ~/.gitSync.sh
 	source ~/.zshrc
 "
-mkdir ~/$dirSync ~/$tmpSync &> /dev/null
-cd ~/$tmpSync
-git init &> /dev/null && git remote add origin $myGit &> /dev/null
-cd -
-
+if [ ! -d $dirSync ] || [ -d $tmpSync ]
+then
+	mkdir ~/$dirSync ~/$tmpSync &> /dev/null
+	cd ~/$tmpSync
+	git init &> /dev/null && git remote add origin $myGit &> /dev/null
+	cd -
+fi
 alias gitTake="
 	rm -rf ~/$tmpSync ~/$dirSync
 	git clone $myGit ~/$tmpSync
@@ -77,4 +79,7 @@ alias gitAutoSync="
 	source ~/.cronErsatz
 "
 #Create ersatz of cron
-echo "source $HOME/.gitSync.sh 2> /dev/null;\`gitAutoSync\`" > $HOME/.cronErsatz
+if [ ! -f $HOME/.cronErsatz ]
+then
+	echo "source $HOME/.gitSync.sh 2> /dev/null;\`gitAutoSync\`" > $HOME/.cronErsatz
+fi
