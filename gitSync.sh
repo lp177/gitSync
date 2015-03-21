@@ -53,7 +53,7 @@ alias gitClean="
 alias gitSync="
 	cd ~/$tmpSync;
 	$previousSync;
-	rsync --links -hiav ~/$dirSync/* --delete ~/$tmpSync;
+	rsync -lrv ~/$dirSync/* --delete ~/$tmpSync;
 	find */ -name .git | sed 's/\/\//\//' | xargs git rm -rvf --ignore-unmatch;
 	find */ -name .git | sed 's/\/\//\//' | xargs rm -rfv;
 	git add ./*;git commit -am 'Update `date`';git push origin master;cd -
