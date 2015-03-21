@@ -4,17 +4,15 @@ myGit="https://github.com/[MyGitPseudo]/[MyRepository].git"
 dirSync="Sync"
 #Dir target for temporary storage
 tmpSync="ExtSync"
+#interval in second into two auto sync (after launch cmd gitAutoSync)
+interval_auto_sync=60
 #Command sh execute previous the push
-
 previousSync="
 	cp ~/.zshrc ~/$dirSync/zshrc;
 	cp ~/.vimrc ~/$dirSync/vimrc;
 	cp ~/.cronErsatz ~/$dirSync
 	cp ~/.gitSync.sh ~/$dirSync
 "
-#interval in second into two auto sync (after launch cmd gitAutoSync)
-interval_auto_sync=60
-
 preserveHolder="
 	cat ~/gitSync.sh > ~/$dirSync/_gitSync.sh
 	cat ~/.zshrc > ~/$dirSync/_zshrc
@@ -27,6 +25,8 @@ afterTake="$preserveHolder
 	cat ~/$dirSync/.gitSync.sh > ~/.gitSync.sh
 	source ~/.zshrc
 "
+
+#Create busy files if necessary
 if [ ! -d $dirSync ] || [ -d $tmpSync ]
 then
 	mkdir ~/$dirSync ~/$tmpSync &> /dev/null
@@ -34,6 +34,11 @@ then
 	git init &> /dev/null && git remote add origin $myGit &> /dev/null
 	cd -
 fi
+if [ ! -f $HOME/.cronErsatz ]
+then
+	echo "source $HOME/.gitSync.sh 2> /dev/null;\`gitAutoSync\`" > $HOME/.cronErsatz
+fi
+
 alias gitTake="
 	rm -rf ~/$tmpSync ~/$dirSync
 	git clone $myGit ~/$tmpSync
@@ -48,13 +53,11 @@ alias gitClean="
 alias gitSync="
 	cd ~/$tmpSync;
 	$previousSync;
-	rsync --links -rv ~/$dirSync/* --delete ~/$tmpSync;
+	rsync --links -hiav ~/$dirSync/* --delete ~/$tmpSync;
 	find */ -name .git | sed 's/\/\//\//' | xargs git rm -rvf --ignore-unmatch;
 	find */ -name .git | sed 's/\/\//\//' | xargs rm -rfv;
 	git add ./*;git commit -am 'Update `date`';git push origin master;cd -
 "
-alias gs="gitSync"
-
 #Rm all & push (alternative for push -f)
 alias gitReset="
 	cd ~/$tmpSync;
@@ -78,8 +81,4 @@ alias gitAutoSync="
 	clear;
 	source ~/.cronErsatz
 "
-#Create ersatz of cron
-if [ ! -f $HOME/.cronErsatz ]
-then
-	echo "source $HOME/.gitSync.sh 2> /dev/null;\`gitAutoSync\`" > $HOME/.cronErsatz
-fi
+alias gs="gitSync"
