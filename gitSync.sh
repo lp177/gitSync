@@ -19,25 +19,13 @@ preserveHolder="
 	cat ~/.vimrc > ~/$dirSync/_vimrc
 	rm -rf ~/$dirSync/_vim
 "
-afterTake="$preserveHolder
-	cat ~/$dirSync/vimrc > ~/.vimrc
-	cat ~/$dirSync/zshrc > ~/.zshrc
-	cat ~/$dirSync/.gitSync.sh > ~/.gitSync.sh
-	source ~/.zshrc
-"
-
-#Create busy files if necessary
-if [ ! -d $dirSync ] || [ -d $tmpSync ]
-then
-	mkdir ~/$dirSync ~/$tmpSync &> /dev/null
-	cd ~/$tmpSync
-	git init &> /dev/null && git remote add origin $myGit &> /dev/null
-	cd -
-fi
-if [ ! -f $HOME/.cronErsatz ]
-then
-	echo "source $HOME/.gitSync.sh 2> /dev/null;\`gitAutoSync\`" > $HOME/.cronErsatz
-fi
+afterTake=""
+#"$preserveHolder
+#	cat ~/$dirSync/vimrc > ~/.vimrc
+#	cat ~/$dirSync/zshrc > ~/.zshrc
+#	cat ~/$dirSync/.gitSync.sh > ~/.gitSync.sh
+#	source ~/.zshrc
+#"
 
 alias gitTake="
 	rm -rf ~/$tmpSync ~/$dirSync
@@ -82,3 +70,16 @@ alias gitAutoSync="
 	source ~/.cronErsatz
 "
 alias gs="gitSync"
+
+#Create busy files if necessary
+if [ ! -d $dirSync ] || [ -d $tmpSync ]
+then
+	mkdir ~/$dirSync ~/$tmpSync &> /dev/null
+	cd ~/$tmpSync
+	git init &> /dev/null && git remote add origin $myGit &> /dev/null
+	cd -
+fi
+if [ ! -f $HOME/.cronErsatz ]
+then
+	echo "source $HOME/.gitSync.sh 2> /dev/null;\`gitAutoSync\`" > $HOME/.cronErsatz
+fi
