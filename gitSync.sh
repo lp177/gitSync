@@ -12,7 +12,7 @@ previousSync="
 	cp ~/.zshrc $dirSync/zshrc;
 	cp ~/.vimrc $dirSync/vimrc;
 	cp ~/.cronErsatz $dirSync
-	cp ~/.gitSync.sh $dirSync
+	cp ~/gitSync.sh $dirSync
 "
 #For not erease directly specifics files
 preserveHolder="
@@ -26,7 +26,7 @@ afterTake=""
 #"$preserveHolder
 #	cat $dirSync/vimrc > ~/.vimrc
 #	cat $dirSync/zshrc > ~/.zshrc
-#	cat $dirSync/.gitSync.sh > ~/.gitSync.sh
+#	cat $dirSync/gitSync.sh > ~/.gitSync.sh
 #	source ~/.zshrc
 #"
 
@@ -97,5 +97,5 @@ fi
 if [ ! -f $HOME/.cronErsatz ]
 then
 	echo "Create Dir tmpSync at $tmpSync"
-	echo "source $HOME/.gitSync.sh 2> /dev/null;\`gitAutoSync\`" > $HOME/.cronErsatz
+	echo "source $HOME/gitSync.sh 2> /dev/null;\`gitAutoSync\`" > $HOME/.cronErsatz
 fi
