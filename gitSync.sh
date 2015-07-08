@@ -6,19 +6,22 @@ dirSync="~/Sync"
 tmpSync="~/ExtSync"
 #interval in second into two auto sync (after launch cmd gitAutoSync)
 interval_auto_sync=60
-#Command sh execute previous the push
+
+#Command sh execute previous the save on git (for save various scattered files)
 previousSync="
 	cp ~/.zshrc $dirSync/zshrc;
 	cp ~/.vimrc $dirSync/vimrc;
 	cp ~/.cronErsatz $dirSync
 	cp ~/.gitSync.sh $dirSync
 "
+#For not erease directly specifics files
 preserveHolder="
 	cat ~/gitSync.sh > $dirSync/_gitSync.sh
 	cat ~/.zshrc > $dirSync/_zshrc
 	cat ~/.vimrc > $dirSync/_vimrc
 	rm -rf $dirSync/_vim
 "
+#Command sh execute after the repatriation (for load automaticaly you remote conf for exemple, empty by default)
 afterTake=""
 #"$preserveHolder
 #	cat $dirSync/vimrc > ~/.vimrc
@@ -27,17 +30,20 @@ afterTake=""
 #	source ~/.zshrc
 #"
 
+#Repatriation of your git repository to local $dirSync
 alias gitTake="
 	rm -rf $tmpSync $dirSync
 	git clone $myGit $tmpSync
 	cp -R $tmpSync $dirSync
 	rm -rf $dirSync/.git
 "
+#Removes all SSH keys and busy directories $dirSync/$tmpSync
 alias gitClean="
 	ssh-keygen -R $myGit
 	rm -rf ~/.ssh/known_hosts.old
 	rm -rf $tmpSync $dirSync
 "
+#Save your Sync directory
 alias gitSync="
 	cd $tmpSync;
 	$previousSync;
@@ -71,7 +77,8 @@ alias gitAutoSync="
 "
 alias gs="gitSync"
 
-#Create busy files if necessary
+#Create busy dirs/files if necessary
+
 if [ ! -d $dirSync ]
 then
 	echo "Create Dir Sync at $dirSync"
