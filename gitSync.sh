@@ -19,7 +19,7 @@ path_conf_sublime="$MAC_HOME/Library/Application\ Support/Sublime\ Text\ 3/Packa
 #Command sh execute previous the save on git (for save various scattered files)
 previousSync="
 	cp $path_conf_sublime $dirSync/.
-	cp -R ~/.vim $dirSync/vim;
+	cp -pXRf ~/.vim $dirSync/vim;
 	cp ~/.zshrc $dirSync/zshrc;
 	cp ~/.vimrc $dirSync/vimrc;
 	cp ~/.cronErsatz $dirSync/cronErsatz
@@ -85,8 +85,8 @@ alias gitSyncUninstall="
 
 alias gitSync="
 	cd $tmpSync;
-	$previousSync;
 	rsync -ar $dirSync/* --delete $tmpSync;
+	$previousSync;
 	find */ -name .git | sed 's/\/\//\//' | xargs git rm -rf --ignore-unmatch;
 	find */ -name .git | sed 's/\/\//\//' | xargs rm -rf;
 	git add ./*;git commit -am 'Update `date`';git push origin master;cd -
