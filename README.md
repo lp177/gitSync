@@ -15,4 +15,4 @@ source ~/.zshrc
 
 Edit the first line of the new ~/.gitSync.sh file with your repository address.
 
-Now type gitSync in a shell anywhere for Syncronyze your repository.
+Now enter gitSync in a shell commande anywhere for synchronize your repository.
