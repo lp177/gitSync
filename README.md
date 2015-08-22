@@ -13,6 +13,6 @@ source ~/.zshrc
 
 ```
 
-Edit the first line of the new ~/.gitSync.sh file with your repository address.
+Edit the value of myGit variable in the new ~/gitSync/.gitSync.sh file with your repository address.
 
-Now enter gitSync in a shell commande anywhere for synchronize your repository.
+Now enter gitSync in a shell commande anywhere for synchronize your repository, or gitSyncUninstall for remove me.
