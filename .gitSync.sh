@@ -51,6 +51,7 @@ updateRemote="
 	cd $tmpSync
 	git remote rm origin
 	git remote add origin $myGit
+	cd -
 "
 
 ###
@@ -96,7 +97,9 @@ alias gitSync="
 	find */ -name .git | sed 's/\/\//\//' | xargs git rm -rf --ignore-unmatch
 	find */ -name .git | sed 's/\/\//\//' | xargs rm -rf
 	$updateRemote
-	git add ./*;git commit -am 'Update `date`';git push origin master
+	git add ./*
+	git commit -am 'Update `date`'
+	git push -f origin master
 	cd -
 "
 
