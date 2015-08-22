@@ -6,9 +6,8 @@ Sync a dir with many git project in alone repository in one commande
 Paste that in a shell for a simply installation.
 
 ```
-cd;mkdir .gitSync;cd .gitSync
-curl https://raw.githubusercontent.com/lp177/gitSync/master/.gitSync.sh >> ~/.gitSync.sh &&
-echo "\nsource ~/.gitSync.sh" >> ~/.zshrc && 
+git clone https://github.com/lp177/gitSync.git ~/.gitSync
+echo "\nsource ~/.gitSync/.gitSync.sh" >> ~/.zshrc
 source ~/.zshrc
 
 ```
