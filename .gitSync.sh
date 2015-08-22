@@ -6,7 +6,9 @@ myGit="https://github.com/[MyGitPseudo]/[My repo].git"
 #Dir wanted for Sync
 dirSync="$HOME/Sync"
 #Dir target for temporary storage
-tmpSync="$HOME/ExtSync"
+tmpSync="$HOME/.gitSync/ExtSync"
+#path for gitSync files
+gitSyncPath/="$HOME/.gitSync"
 #interval in second into two auto sync (after launch cmd gitAutoSync)
 interval_auto_sync=60
 
@@ -22,13 +24,12 @@ previousSync="
 	cp -pXRf ~/.vim $dirSync/vim
 	cp ~/.zshrc $dirSync/zshrc
 	cp ~/.vimrc $dirSync/vimrc
-	cp ~/.cronErsatz $dirSync/cronErsatz
-	cp ~/.gitSync.sh $dirSync/gitSync
-	cp ~/.z42.sh $dirSync/z42.sh
-	cp ~/.start.sh $dirSync/start.sh
+	cp -R $gitSyncPath/.gitSync $dirSync/.
+	cp ~/.z42.sh $dirSync/.
+	cp ~/.start.sh $dirSync/.
 "
 preserveHolder="
-	cat ~/gitSync.sh > $dirSync/_gitSync.sh
+	cat $gitSyncPath/gitSync.sh > $dirSync/_gitSync.sh
 	cat ~/.zshrc > $dirSync/_zshrc
 	cat ~/.vimrc > $dirSync/_vimrc
 	rm -rf $dirSync/_vim
@@ -43,7 +44,7 @@ afterTake=""
 #	cp -R $dirSync/vim ~/.vim
 #	cat $dirSync/vimrc > ~/.vimrc
 #	cat $dirSync/zshrc > ~/.zshrc
-#	cat $dirSync/gitSync.sh > ~/gitSync.sh
+#	cat $dirSync/gitSync.sh > $gitSyncPath/gitSync.sh
 #	source ~/.zshrc
 #"
 
@@ -70,7 +71,7 @@ alias gitTake="
 alias gitClean="
 	ssh-keygen -R $myGit
 	rm -rf ~/.ssh/known_hosts.old
-	cat $dirSync/_gitSync.sh > ~/gitSync.sh
+	cat $dirSync/_gitSync.sh > $gitSyncPath/.gitSync.sh
 	cat $dirSync/_zshrc > ~/.zshrc
 	cat $dirSync/_vimrc > ~/.vimrc
 	rm -rf ~/.vim
@@ -81,13 +82,13 @@ alias gitClean="
 "
 
 alias gitSyncUninstall="
-	read -p "Do you want rm $dirSync \? " -n 1 -r
+	read -p \"Do you want rm $dirSync ? \" -n 1 -r
 	echo
 	if [[ $REPLY =~ ^[Yy]$ ]]
 	then
 		rm -rf $dirSync
 	fi
-	rm -rf ~/.cronErsatz $tmpSync ~/.gitSync
+	rm -rf $gitSyncPath
 "
 
 alias gitSync="
@@ -128,7 +129,7 @@ alias gitAutoSync="
 	echo \"Pending next interval ...   ($((interval_auto_sync / 60))mn)\"
 	sleep $interval_auto_sync
 	clear
-	source ~/.cronErsatz
+	source $gitSyncPath/.cronErsatz
 "
 
 ###
@@ -152,12 +153,14 @@ then
 	cd -
 fi
 
-if [ ! -f $HOME/.cronErsatz ]
+if [ ! -f $gitSyncPath/.cronErsatz ]
 then
-	echo "source $HOME/.gitSync.sh 2> /dev/null;\`gitAutoSync\`" > $HOME/.cronErsatz
+	echo "source $gitSyncPath/.gitSync.sh 2> /dev/null;\`gitAutoSync\`" > $gitSyncPath/.cronErsatz
 fi
 
 #set +x
 ###
+
+export $gitSyncPath
 
 set +e
