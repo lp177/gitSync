@@ -8,7 +8,7 @@ dirSync="$HOME/Sync"
 #Dir target for temporary storage
 tmpSync="$HOME/.gitSync/ExtSync"
 #path for gitSync files
-gitSyncPath/="$HOME/.gitSync"
+gitSyncPath="$HOME/.gitSync"
 #interval in second into two auto sync (after launch cmd gitAutoSync)
 interval_auto_sync=60
 
@@ -24,7 +24,7 @@ previousSync="
 	cp -pXRf ~/.vim $dirSync/vim
 	cp ~/.zshrc $dirSync/zshrc
 	cp ~/.vimrc $dirSync/vimrc
-	cp -R $gitSyncPath/.gitSync $dirSync/.
+	cp -R $gitSyncPath/.gitSync.sh $dirSync/.
 	cp ~/.z42.sh $dirSync/.
 	cp ~/.start.sh $dirSync/.
 "
@@ -82,13 +82,7 @@ alias gitClean="
 "
 
 alias gitSyncUninstall="
-	read -p \"Do you want rm $dirSync ? \" -n 1 -r
-	echo
-	if [[ $REPLY =~ ^[Yy]$ ]]
-	then
-		rm -rf $dirSync
-	fi
-	rm -rf $gitSyncPath
+	./$gitSyncPath/gitSyncUninstall $gitSyncPath $dirSync
 "
 
 alias gitSync="
@@ -160,7 +154,5 @@ fi
 
 #set +x
 ###
-
-export $gitSyncPath
 
 set +e
