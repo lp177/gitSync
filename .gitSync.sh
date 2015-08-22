@@ -82,7 +82,7 @@ alias gitClean="
 "
 
 alias gitSyncUninstall="
-	.$gitSyncPath/gitSyncUninstall $gitSyncPath $dirSync
+	$gitSyncPath/gitSyncUninstall $gitSyncPath $dirSync
 "
 
 alias gitSync="
