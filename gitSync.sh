@@ -19,9 +19,9 @@ path_conf_sublime="$MAC_HOME/Library/Application\ Support/Sublime\ Text\ 3/Packa
 #Command sh execute previous the save on git (for save various scattered files)
 previousSync="
 	cp $path_conf_sublime $dirSync/.
-	cp -pXRf ~/.vim $dirSync/vim;
-	cp ~/.zshrc $dirSync/zshrc;
-	cp ~/.vimrc $dirSync/vimrc;
+	cp -pXRf ~/.vim $dirSync/vim
+	cp ~/.zshrc $dirSync/zshrc
+	cp ~/.vimrc $dirSync/vimrc
 	cp ~/.cronErsatz $dirSync/cronErsatz
 	cp ~/.gitSync.sh $dirSync/gitSync
 	cp ~/.z42.sh $dirSync/z42.sh
@@ -46,6 +46,12 @@ afterTake=""
 #	cat $dirSync/gitSync.sh > ~/gitSync.sh
 #	source ~/.zshrc
 #"
+
+updateRemote="
+	cd $tmpSync
+	git remote rm origin
+	git remote add origin $myGit
+"
 
 ###
 
@@ -74,7 +80,7 @@ alias gitClean="
 "
 
 alias gitSyncUninstall="
-	read -p "Do you want rm `$dirSync` ? " -n 1 -r
+	read -p "Do you want rm $dirSync \? " -n 1 -r
 	echo
 	if [[ $REPLY =~ ^[Yy]$ ]]
 	then
@@ -84,38 +90,41 @@ alias gitSyncUninstall="
 "
 
 alias gitSync="
-	cd $tmpSync;
-	rsync -ar $dirSync/* --delete $tmpSync;
-	$previousSync;
-	find */ -name .git | sed 's/\/\//\//' | xargs git rm -rf --ignore-unmatch;
-	find */ -name .git | sed 's/\/\//\//' | xargs rm -rf;
-	git add ./*;git commit -am 'Update `date`';git push origin master;cd -
+	cd $tmpSync
+	rsync -ar $dirSync/* --delete $tmpSync
+	$previousSync
+	find */ -name .git | sed 's/\/\//\//' | xargs git rm -rf --ignore-unmatch
+	find */ -name .git | sed 's/\/\//\//' | xargs rm -rf
+	$updateRemote
+	git add ./*;git commit -am 'Update `date`';git push origin master
+	cd -
 "
 
 #alias gs="gitSync"
 
 #Rm all & push
 alias gitReset="
-	cd $tmpSync;
-	git pull;
-	git pull origin master;
-	git pull;
-	git commit -am \"reset\";
-	git push origin master;
-	git rm -rf *;rm -rf *;
-	git push origin master;
-	cd -;
+	cd $tmpSync
+	git pull
+	git pull origin master
+	git pull
+	git commit -am \"reset\"
+	git push origin master
+	git rm -rf *;rm -rf *
+	git push origin master
+	cd -
 	gitSync
 "
 
 #Launch auto gitSync all interval_auto_sync seconde(s) (not require cron)
 alias gitAutoSync="
-	echo \"Start at: \";date;echo \"\n\";
-	gitSync;
-	echo \"\n\nEnd at: \";date;
-	echo \"Pending next interval ...   ($((interval_auto_sync / 60))mn)\";
-	sleep $interval_auto_sync;
-	clear;
+	echo \"Start at: \";date;echo \"\n\"
+	gitSync
+	echo \"\n\nEnd at: \"
+	date
+	echo \"Pending next interval ...   ($((interval_auto_sync / 60))mn)\"
+	sleep $interval_auto_sync
+	clear
 	source ~/.cronErsatz
 "
 
