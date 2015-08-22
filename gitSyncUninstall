@@ -1,0 +1,8 @@
+#!/bin/bash
+read -p "Do you want rm $1 ?" -n 1 -r
+echo
+if [[ $REPLY =~ ^[Yy]$ ]]
+then
+	rm -rf $2
+fi
+rm -rf $1
