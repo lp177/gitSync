@@ -2,7 +2,7 @@ set -e
 
 ###Personal informations (you need to set him):
 
-myGit="https://github.com/[MyGitPseudo]/[My repo].git"
+myGit="https://github.com/lp177/42.git"
 #Dir wanted for Sync
 dirSync="$HOME/Sync"
 #Dir target for temporary storage
@@ -20,14 +20,24 @@ path_conf_atom="$MAC_HOME/.atom/"
 
 #Command sh execute previous the save on git (for save various scattered files)
 previousSync="
-	cp $path_conf_sublime $dirSync/.
-	cp $path_conf_atom $dirSync/.
-	cp -pXRf ~/.vim $dirSync/vim
-	cp ~/.zshrc $dirSync/zshrc
-	cp ~/.vimrc $dirSync/vimrc
-	cp -R $gitSyncPath/gitSync.sh $dirSync/.
-	cp ~/.z42.sh $dirSync/.
-	cp ~/.start.sh $dirSync/.
+	$for_cp[0] = $path_conf_sublime
+	$for_cp[1] = $path_conf_atom
+	$for_cp[2] = ~/.vim
+	$for_cp[3] = ~/.vimrc
+	$for_cp[4] = ~/.zshrc
+	$for_cp[5] = $gitSyncPath/gitSync.sh
+	$for_cp[6] = ~/.z42.sh
+	$for_cp[7] = ~/.start.sh
+
+	for path in "${for_cp[@]}"
+	do
+		if [ -d $path ]
+		then
+			cp $path $dirSync/.
+		elif [ -f $path ]
+			cp -pXRf $path $dirSync/.
+		fi
+	done
 "
 preserveHolder="
 	cat $gitSyncPath/gitSync.sh > $dirSync/_gitSync.sh
@@ -124,7 +134,7 @@ alias gitAutoSync="
 	echo \"Pending next interval ...   ($((interval_auto_sync / 60))mn)\"
 	sleep $interval_auto_sync
 	clear
-	source $gitSyncPath/.cronErsatz
+	source $gitSyncPath/cronErsatz
 "
 
 ###
@@ -150,7 +160,7 @@ fi
 
 if [ ! -f $gitSyncPath/.cronErsatz ]
 then
-	echo "source $gitSyncPath/gitSync.sh 2> /dev/null;\`gitAutoSync\`" > $gitSyncPath/.cronErsatz
+	echo "source $gitSyncPath/gitSync.sh 2> /dev/null;\`gitAutoSync\`" > $gitSyncPath/cronErsatz
 fi
 
 #set +x
