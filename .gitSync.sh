@@ -25,7 +25,7 @@ previousSync="
 	cp -pXRf ~/.vim $dirSync/vim
 	cp ~/.zshrc $dirSync/zshrc
 	cp ~/.vimrc $dirSync/vimrc
-	cp -R $gitSyncPath/.gitSync.sh $dirSync/.
+	cp -R $gitSyncPath/gitSync.sh $dirSync/.
 	cp ~/.z42.sh $dirSync/.
 	cp ~/.start.sh $dirSync/.
 "
@@ -72,7 +72,7 @@ alias gitTake="
 alias gitClean="
 	ssh-keygen -R $myGit
 	rm -rf ~/.ssh/known_hosts.old
-	cat $dirSync/_gitSync.sh > $gitSyncPath/.gitSync.sh
+	cat $dirSync/_gitSync.sh > $gitSyncPath/gitSync.sh
 	cat $dirSync/_zshrc > ~/.zshrc
 	cat $dirSync/_vimrc > ~/.vimrc
 	rm -rf ~/.vim
@@ -83,7 +83,7 @@ alias gitClean="
 "
 
 alias gitSyncUninstall="
-	$gitSyncPath/gitSyncUninstall $gitSyncPath $dirSync
+	$gitSyncPath/uninstaller $gitSyncPath $dirSync
 "
 
 alias gitSync="
@@ -150,7 +150,7 @@ fi
 
 if [ ! -f $gitSyncPath/.cronErsatz ]
 then
-	echo "source $gitSyncPath/.gitSync.sh 2> /dev/null;\`gitAutoSync\`" > $gitSyncPath/.cronErsatz
+	echo "source $gitSyncPath/gitSync.sh 2> /dev/null;\`gitAutoSync\`" > $gitSyncPath/.cronErsatz
 fi
 
 #set +x
