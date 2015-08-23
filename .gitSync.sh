@@ -13,7 +13,7 @@ gitSyncPath="$HOME/.gitSync"
 interval_auto_sync=60
 
 path_conf_sublime="$MAC_HOME/Library/Application\ Support/Sublime\ Text\ 3/Packages/User/Preferences.sublime-settings"
-
+path_conf_atom="$MAC_HOME/.atom/"
 ###
 
 ###Routines:
@@ -21,6 +21,7 @@ path_conf_sublime="$MAC_HOME/Library/Application\ Support/Sublime\ Text\ 3/Packa
 #Command sh execute previous the save on git (for save various scattered files)
 previousSync="
 	cp $path_conf_sublime $dirSync/.
+	cp $path_conf_atom $dirSync/.
 	cp -pXRf ~/.vim $dirSync/vim
 	cp ~/.zshrc $dirSync/zshrc
 	cp ~/.vimrc $dirSync/vimrc
