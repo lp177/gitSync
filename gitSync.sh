@@ -1,61 +1,35 @@
-#!/bin/bash
 set -e
 
 ###Personal informations (you need to set him):
 
 myGit="https://github.com/lp177/42.git"
 #Dir wanted for Sync
-dirSync="$HOME/Sync"
+dirSync="~/Sync"
 #Dir target for temporary storage
-tmpSync="$HOME/.gitSync/ExtSync"
+tmpSync="~/.gitSync/ExtSync"
 #path for gitSync files
-gitSyncPath="$HOME/.gitSync"
+gitSyncPath="~/.gitSync"
 #interval in second into two auto sync (after launch cmd gitAutoSync)
 interval_auto_sync=60
 
-#declare -a arr=("$MAC_HOME" "/Library/Application\ Support/Sublime\ Text\ 3/Packages/User/Preferences.sublime-settings")
-
-whotest[1]='test' || (echo 'Failure: arrays not supported in this version of bash.' && exit 2)
-
-# $for_cp[0]="$MAC_HOME"
-# $for_cp[0]+='/Library/Application\ Support/Sublime\ Text\ 3/Packages/User/Preferences.sublime-settings'
-# $for_cp[1]=$MAC_HOME
-# $for_cp[4]+='/.atom/'
-for_cp[3]='~/.vim'
-for_cp[2]='~/.vimrc'
-for_cp[1]='~/.zshrc'
-# $for_cp[5]=$gitSyncPath/gitSync.sh
-for_cp[5]='~/.z42.sh'
-for_cp[4]='~/.start.sh'
+# Path variables for beautify script [optionaly]
+path_conf_sublime="$MAC_HOME/Library/Application\ Support/Sublime\ Text\ 3/Packages/User/Preferences.sublime-settings"
+path_conf_atom="$MAC_HOME/.atom/"
 ###
 
 ###Routines:
 
 #Command sh execute previous the save on git (for save various scattered files)
+
 previousSync="
-
-	$i = 0;
-
-	echo \"My array have ${#for_cp[@]} cases\"
-
-	for list_for_cp in \"${for_cp[@]}\"
-	do
-		if [[ \"$i\" -eq 0 ]]; then;
-			echo 'intercept';
-			$i += $i;
-			echo 'next';
-			continue
-		fi
-		echo \"Foreach on $list_for_cp\"
-
-		if [ -d "$list_for_cp" ]; then
-			cp "$list_for_cp" $dirSync/.
-		elif [ -f "$list_for_cp" ]; then
-			cp -pXRf "$list_for_cp" $dirSync/.
-		else
-			echo \"$list_for_cp not found\"
-		fi
-	done
+	cp $path_conf_sublime $dirSync/.
+	cp -pXRf $path_conf_atom $dirSync/.
+	cp -pXRf ~/.vim $dirSync/.
+	cp ~/.zshrc $dirSync/.
+	cp ~/.vimrc $dirSync/.
+	cp -R $gitSyncPath/gitSync.sh $dirSync/.
+	cp ~/.z42.sh $dirSync/.
+	cp ~/.start.sh $dirSync/.
 "
 preserveHolder="
 	cat $gitSyncPath/gitSync.sh > $dirSync/_gitSync.sh
@@ -115,16 +89,16 @@ alias gitSyncUninstall="
 "
 
 alias gitSync="
-	# cd $tmpSync
-	# rsync -ar $dirSync/* --delete $tmpSync
+	cd $tmpSync
+	rsync -ar $dirSync/* --delete $tmpSync
 	$previousSync
-	# find */ -name .git | sed 's/\/\//\//' | xargs git rm -rf --ignore-unmatch
-	# find */ -name .git | sed 's/\/\//\//' | xargs rm -rf
-	# $updateRemote
-	# git add ./*
-	# git commit -am 'Update `date`'
-	# git push -f origin master
-	# cd -
+	find */ -name .git | sed 's/\/\//\//' | xargs git rm -rf --ignore-unmatch
+	find */ -name .git | sed 's/\/\//\//' | xargs rm -rf
+	$updateRemote
+	git add ./*
+	git commit -am 'Update `date`'
+	git push -f origin master
+	cd -
 "
 
 #alias gs="gitSync"
