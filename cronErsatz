@@ -1,1 +1,1 @@
-source ~/.gitSync/gitSync.sh 2> /dev/null;`gitAutoSync`
+source /Volumes/afp177/.gitSync/gitSync.sh 2> /dev/null;`gitAutoSync`

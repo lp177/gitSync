@@ -1,3 +1,4 @@
+#!/bin/bash
 set -e
 
 ###Personal informations (you need to set him):
@@ -12,30 +13,47 @@ gitSyncPath="$HOME/.gitSync"
 #interval in second into two auto sync (after launch cmd gitAutoSync)
 interval_auto_sync=60
 
-path_conf_sublime="$MAC_HOME/Library/Application\ Support/Sublime\ Text\ 3/Packages/User/Preferences.sublime-settings"
-path_conf_atom="$MAC_HOME/.atom/"
+#declare -a arr=("$MAC_HOME" "/Library/Application\ Support/Sublime\ Text\ 3/Packages/User/Preferences.sublime-settings")
+
+whotest[1]='test' || (echo 'Failure: arrays not supported in this version of bash.' && exit 2)
+
+# $for_cp[0]="$MAC_HOME"
+# $for_cp[0]+='/Library/Application\ Support/Sublime\ Text\ 3/Packages/User/Preferences.sublime-settings'
+# $for_cp[1]=$MAC_HOME
+# $for_cp[4]+='/.atom/'
+for_cp[3]='~/.vim'
+for_cp[2]='~/.vimrc'
+for_cp[1]='~/.zshrc'
+# $for_cp[5]=$gitSyncPath/gitSync.sh
+for_cp[5]='~/.z42.sh'
+for_cp[4]='~/.start.sh'
 ###
 
 ###Routines:
 
 #Command sh execute previous the save on git (for save various scattered files)
 previousSync="
-	$for_cp[0] = $path_conf_sublime
-	$for_cp[1] = $path_conf_atom
-	$for_cp[2] = ~/.vim
-	$for_cp[3] = ~/.vimrc
-	$for_cp[4] = ~/.zshrc
-	$for_cp[5] = $gitSyncPath/gitSync.sh
-	$for_cp[6] = ~/.z42.sh
-	$for_cp[7] = ~/.start.sh
 
-	for path in "${for_cp[@]}"
+	$i = 0;
+
+	echo \"My array have ${#for_cp[@]} cases\"
+
+	for list_for_cp in \"${for_cp[@]}\"
 	do
-		if [ -d $path ]
-		then
-			cp $path $dirSync/.
-		elif [ -f $path ]
-			cp -pXRf $path $dirSync/.
+		if [[ \"$i\" -eq 0 ]]; then;
+			echo 'intercept';
+			$i += $i;
+			echo 'next';
+			continue
+		fi
+		echo \"Foreach on $list_for_cp\"
+
+		if [ -d "$list_for_cp" ]; then
+			cp "$list_for_cp" $dirSync/.
+		elif [ -f "$list_for_cp" ]; then
+			cp -pXRf "$list_for_cp" $dirSync/.
+		else
+			echo \"$list_for_cp not found\"
 		fi
 	done
 "
@@ -97,16 +115,16 @@ alias gitSyncUninstall="
 "
 
 alias gitSync="
-	cd $tmpSync
-	rsync -ar $dirSync/* --delete $tmpSync
+	# cd $tmpSync
+	# rsync -ar $dirSync/* --delete $tmpSync
 	$previousSync
-	find */ -name .git | sed 's/\/\//\//' | xargs git rm -rf --ignore-unmatch
-	find */ -name .git | sed 's/\/\//\//' | xargs rm -rf
-	$updateRemote
-	git add ./*
-	git commit -am 'Update `date`'
-	git push -f origin master
-	cd -
+	# find */ -name .git | sed 's/\/\//\//' | xargs git rm -rf --ignore-unmatch
+	# find */ -name .git | sed 's/\/\//\//' | xargs rm -rf
+	# $updateRemote
+	# git add ./*
+	# git commit -am 'Update `date`'
+	# git push -f origin master
+	# cd -
 "
 
 #alias gs="gitSync"
