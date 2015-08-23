@@ -13,6 +13,5 @@ then
 	rm -rf $1
 	echo "sleep 5;rm -rf $1" > /tmp/gitSyncRm
 	chmod 777 /tmp/gitSyncRm
-	nohup /tmp/gitSyncRm &
+	nohup /tmp/gitSyncRm 2> /dev/null &
 fi
-
