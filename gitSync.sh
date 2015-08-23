@@ -4,15 +4,18 @@ set -e
 
 myGit="https://github.com/lp177/42.git"
 #Dir wanted for Sync
-dirSync="~/Sync"
+dirSync="$HOME/Sync"
 #Dir target for temporary storage
-tmpSync="~/.gitSync/ExtSync"
+tmpSync="$HOME/.gitSync/ExtSync"
 #path for gitSync files
-gitSyncPath="~/.gitSync"
+gitSyncPath="$HOME/.gitSync"
 #interval in second into two auto sync (after launch cmd gitAutoSync)
 interval_auto_sync=60
 
 # Path variables for beautify script [optionaly]
+if [ -z "$MAC_HOME" ]; then
+	$MAC_HOME="$HOME"
+
 path_conf_sublime="$MAC_HOME/Library/Application\ Support/Sublime\ Text\ 3/Packages/User/Preferences.sublime-settings"
 path_conf_atom="$MAC_HOME/.atom/"
 ###
@@ -24,31 +27,31 @@ path_conf_atom="$MAC_HOME/.atom/"
 previousSync="
 	cp $path_conf_sublime $dirSync/.
 	cp -pXRf $path_conf_atom $dirSync/.
-	cp -pXRf ~/.vim $dirSync/.
-	cp ~/.zshrc $dirSync/.
-	cp ~/.vimrc $dirSync/.
+	cp -pXRf $HOME/.vim $dirSync/.
+	cp $HOME/.zshrc $dirSync/.
+	cp $HOME/.vimrc $dirSync/.
 	cp -R $gitSyncPath/gitSync.sh $dirSync/.
-	cp ~/.z42.sh $dirSync/.
-	cp ~/.start.sh $dirSync/.
+	cp $HOME/.z42.sh $dirSync/.
+	cp $HOME/.start.sh $dirSync/.
 "
 preserveHolder="
 	cat $gitSyncPath/gitSync.sh > $dirSync/_gitSync.sh
-	cat ~/.zshrc > $dirSync/_zshrc
-	cat ~/.vimrc > $dirSync/_vimrc
+	cat $HOME/.zshrc > $dirSync/_zshrc
+	cat $HOME/.vimrc > $dirSync/_vimrc
 	rm -rf $dirSync/_vim
-	cp -R ~/.vim $dirSync/_vim
+	cp -R $HOME/.vim $dirSync/_vim
 "
 #	cat $path_conf_sublime/Preferences.Sublime-settings > $dirSync/_Preferences.sublime-settings
 
 #Command sh execute after the repatriation (for load automaticaly you remote conf for exemple, empty by default)
 afterTake=""
 #	$preserveHolder
-#	rm -rf ~/.vim
-#	cp -R $dirSync/vim ~/.vim
-#	cat $dirSync/vimrc > ~/.vimrc
-#	cat $dirSync/zshrc > ~/.zshrc
+#	rm -rf $HOME/.vim
+#	cp -R $dirSync/vim $HOME/.vim
+#	cat $dirSync/vimrc > $HOME/.vimrc
+#	cat $dirSync/zshrc > $HOME/.zshrc
 #	cat $dirSync/gitSync.sh > $gitSyncPath/gitSync.sh
-#	source ~/.zshrc
+#	source $HOME/.zshrc
 #"
 
 updateRemote="
@@ -73,15 +76,15 @@ alias gitTake="
 
 alias gitClean="
 	ssh-keygen -R $myGit
-	rm -rf ~/.ssh/known_hosts.old
+	rm -rf $HOME/.ssh/known_hosts.old
 	cat $dirSync/_gitSync.sh > $gitSyncPath/gitSync.sh
-	cat $dirSync/_zshrc > ~/.zshrc
-	cat $dirSync/_vimrc > ~/.vimrc
-	rm -rf ~/.vim
-	cp -R $dirSync/_vim ~/.vim
+	cat $dirSync/_zshrc > $HOME/.zshrc
+	cat $dirSync/_vimrc > $HOME/.vimrc
+	rm -rf $HOME/.vim
+	cp -R $dirSync/_vim $HOME/.vim
 	cat $dirSync/_Preferences.sublime-settings > $path_conf_sublime
 	rm -rf $tmpSync $dirSync
-	source ~/.zshrc
+	source $HOME/.zshrc
 "
 
 alias gitSyncUninstall="
