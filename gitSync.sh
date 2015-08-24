@@ -5,6 +5,8 @@ set -e
 myGit="https://github.com/lp177/42.git"
 #Dir wanted for Sync
 dirSync="$HOME/Sync"
+#Dir wanted for save config files
+dirCfg="$dirSync/Cfg"
 #Dir target for temporary storage
 tmpSync="$HOME/.gitSync/ExtSync"
 #path for gitSync files
@@ -17,17 +19,25 @@ interval_auto_sync=60
 
 #Command sh execute previous the save on git with gitSync alias (for save various scattered files/folders)
 previousSync="
-	cp -R $gitSyncPath $dirSync/.
-	cp -pXRf $HOME/.atom $dirSync/.
-	cp -pXRf $HOME/.vim $dirSync/.
-	cp $HOME/.vimrc $dirSync/.
-	cp $HOME/.zshrc $dirSync/.
-	cp $HOME/.z42.sh $dirSync/.
-	cp $HOME/.start.sh $dirSync/.
+	if [ -d $HOME/.atom ]; then
+		rm -rf $dirCfg/.atom
+		cp -pXRf $HOME/.atom $dirCfg/.atom
+	fi
+	if [ -d $HOME/.vim ]; then
+		rm -rf $dirCfg/.vim
+		cp -pXRf $HOME/.vim $dirCfg/.vim
+	fi
+	cp $HOME/.vimrc $dirCfg/.
+	cp $HOME/.zshrc $dirCfg/.
+	cp $gitSyncPath/gitSync.sh $dirCfg/.
+	if [ -f $HOME/.z42.sh ]; then
+		cp $HOME/.z42.sh $dirCfg/.
+		cp $HOME/.start.sh $dirCfg/.
+	fi
 "
 
 #Command sh execute at the end of alias gitTake
-afterTake=""
+afterTake="$infect"
 
 #swapper of cfg
 preserveHolder="
@@ -49,17 +59,17 @@ getHolder="
 #get your cfg on lambda device in preserve all switched files
 infect="
 	$preserveHolder
-	read -p "Do you want infect \( the actual cfg is already save \) ?" -n 1 -r
+	read -p 'Do you want infect \( the actual cfg is already save \) ?' -n 1 -r
 	echo
 	if [[ $REPLY =~ ^[Yy]$ ]]
 	then
 		rm -rf $HOME/.vim
-		cp -R $dirSync/.vim $HOME/.vim
-		cat $dirSync/.vimrc > $HOME/.vimrc
+		cp -R $dirCfg/.vim $HOME/.vim
+		cat $dirCfg/.vimrc > $HOME/.vimrc
 		if [ ! -d $gitSyncPath ]; then
-			cp -R $dirSync/.gitSync > $gitSyncPath
+			cp -R $dirCfg/.gitSync > $gitSyncPath
 		fi
-		cat $dirSync/.zshrc > $HOME/.zshrc
+		cat $dirCfg/.zshrc > $HOME/.zshrc
 		source $HOME/.zshrc
 	fi
 "
@@ -91,12 +101,7 @@ alias gitTake="
 alias gitClean="
 	ssh-keygen -R $myGit
 	rm -rf $HOME/.ssh/known_hosts.old
-	cat $dirSync/_gitSync.sh > $gitSyncPath/gitSync.sh
-	cat $dirSync/_zshrc > $HOME/.zshrc
-	cat $dirSync/_vimrc > $HOME/.vimrc
-	rm -rf $HOME/.vim
-	cp -R $dirSync/_vim $HOME/.vim
-	cat $dirSync/_Preferences.sublime-settings > $path_conf_sublime
+	$uninfect
 	rm -rf $tmpSync $dirSync
 	source $HOME/.zshrc
 "
@@ -106,9 +111,9 @@ alias gitSyncUninstall="
 "
 
 alias gitSync="
-	cd $tmpSync
-	rsync -ar $dirSync/* --delete $tmpSync
+	rsync -a --inplace $dirSync/* --delete $tmpSync
 	$previousSync
+	cd $tmpSync
 	find */ -name .git | sed 's/\/\//\//' | xargs git rm -rf --ignore-unmatch
 	find */ -name .git | sed 's/\/\//\//' | xargs rm -rf
 	$updateRemote
@@ -165,6 +170,12 @@ then
 	cd $tmpSync
 	git init &> /dev/null && git remote add origin $myGit &> /dev/null
 	cd -
+fi
+
+if [ ! -d $dirCfg ]
+then
+	echo "Create Dir dirCfg at $dirCfg"
+	mkdir $dirCfg &> /dev/null
 fi
 
 if [ ! -f $gitSyncPath/.cronErsatz ]
