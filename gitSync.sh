@@ -15,6 +15,7 @@ interval_auto_sync=60
 # Path variables for beautify script [optionaly]
 if [ -z "$MAC_HOME" ]; then
 	$MAC_HOME="$HOME"
+fi
 
 path_conf_sublime="$MAC_HOME/Library/Application\ Support/Sublime\ Text\ 3/Packages/User/Preferences.sublime-settings"
 path_conf_atom="$MAC_HOME/.atom/"
