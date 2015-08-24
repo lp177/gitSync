@@ -12,49 +12,61 @@ gitSyncPath="$HOME/.gitSync"
 #interval in second into two auto sync (after launch cmd gitAutoSync)
 interval_auto_sync=60
 
-# Path variables for beautify script [optionaly]
-if [ -z "$MAC_HOME" ]; then
-	$MAC_HOME="$HOME"
-fi
-
-path_conf_sublime="$MAC_HOME/Library/Application\ Support/Sublime\ Text\ 3/Packages/User/Preferences.sublime-settings"
-path_conf_atom="$MAC_HOME/.atom/"
-###
 
 ###Routines:
 
-#Command sh execute previous the save on git (for save various scattered files)
-
+#Command sh execute previous the save on git with gitSync alias (for save various scattered files/folders)
 previousSync="
-	cp $path_conf_sublime $dirSync/.
-	cp -pXRf $path_conf_atom $dirSync/.
+	cp -R $gitSyncPath $dirSync/.
+	cp -pXRf $HOME/.atom $dirSync/.
 	cp -pXRf $HOME/.vim $dirSync/.
-	cp $HOME/.zshrc $dirSync/.
 	cp $HOME/.vimrc $dirSync/.
-	cp -R $gitSyncPath/gitSync.sh $dirSync/.
+	cp $HOME/.zshrc $dirSync/.
 	cp $HOME/.z42.sh $dirSync/.
 	cp $HOME/.start.sh $dirSync/.
 "
-preserveHolder="
-	cat $gitSyncPath/gitSync.sh > $dirSync/_gitSync.sh
-	cat $HOME/.zshrc > $dirSync/_zshrc
-	cat $HOME/.vimrc > $dirSync/_vimrc
-	rm -rf $dirSync/_vim
-	cp -R $HOME/.vim $dirSync/_vim
-"
-#	cat $path_conf_sublime/Preferences.Sublime-settings > $dirSync/_Preferences.sublime-settings
 
-#Command sh execute after the repatriation (for load automaticaly you remote conf for exemple, empty by default)
+#Command sh execute at the end of alias gitTake
 afterTake=""
-#	$preserveHolder
-#	rm -rf $HOME/.vim
-#	cp -R $dirSync/vim $HOME/.vim
-#	cat $dirSync/vimrc > $HOME/.vimrc
-#	cat $dirSync/zshrc > $HOME/.zshrc
-#	cat $dirSync/gitSync.sh > $gitSyncPath/gitSync.sh
-#	source $HOME/.zshrc
-#"
 
+#swapper of cfg
+preserveHolder="
+	mkdir $dirSync/.preserveHolder
+	cat $HOME/.zshrc > $dirSync/.preserveHolder/.zshrc
+	cat $HOME/.vimrc > $dirSync/.preserveHolder/.vimrc
+	rm -rf $dirSync/.preserveHolder/.vim
+	cp -R $HOME/.vim $dirSync/.preserveHolder/.vim
+"
+getHolder="
+	if [ -d $dirSync/.preserveHolder ]
+	then
+		cat $dirSync/.preserveHolder/.zshrc > $HOME/.zshrc
+		cat $dirSync/.preserveHolder/.vimrc > $HOME/.vimrc
+		rm -rf $HOME/.vim
+		cp -R $dirSync/.preserveHolder/.vim $HOME/.vim
+	fi
+"
+#get your cfg on lambda device in preserve all switched files
+infect="
+	$preserveHolder
+	read -p "Do you want infect \( the actual cfg is already save \) ?" -n 1 -r
+	echo
+	if [[ $REPLY =~ ^[Yy]$ ]]
+	then
+		rm -rf $HOME/.vim
+		cp -R $dirSync/.vim $HOME/.vim
+		cat $dirSync/.vimrc > $HOME/.vimrc
+		if [ ! -d $gitSyncPath ]; then
+			cp -R $dirSync/.gitSync > $gitSyncPath
+		fi
+		cat $dirSync/.zshrc > $HOME/.zshrc
+		source $HOME/.zshrc
+	fi
+"
+uninfect="
+	$getHolder
+"
+#For use always the given $myGit path
 updateRemote="
 	cd $tmpSync
 	git remote rm origin
@@ -66,7 +78,8 @@ updateRemote="
 
 ###Alias:
 
-#Repatriation of your git depot to local $dirSync
+#Get your git depot to local $dirSync
+# /!\ Delete the holdest $dirSync & $tmpSync path given at the top of this file
 alias gitTake="
 	rm -rf $tmpSync $dirSync
 	git clone $myGit $tmpSync
