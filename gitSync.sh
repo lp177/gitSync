@@ -83,6 +83,13 @@ updateRemote="
 	git remote add origin $myGit
 	cd -
 "
+connectRemote="
+	cd $tmpSync
+	rm -rf .git
+	git init
+	git remote add origin $myGit
+	cd -
+"
 
 ###
 
@@ -111,12 +118,12 @@ alias gitSyncUninstall="
 "
 
 alias gitSync="
-	rsync -a --inplace $dirSync/* --delete $tmpSync
 	$previousSync
+	rsync -av $dirSync --delete $tmpSync
 	cd $tmpSync
 	find */ -name .git | sed 's/\/\//\//' | xargs git rm -rf --ignore-unmatch
 	find */ -name .git | sed 's/\/\//\//' | xargs rm -rf
-	$updateRemote
+	$connectRemote
 	git add ./*
 	git commit -am 'Update `date`'
 	git push -f origin master
@@ -167,9 +174,7 @@ if [ ! -d $tmpSync ]
 then
 	echo "Create Dir tmpSync at $tmpSync"
 	mkdir $tmpSync &> /dev/null
-	cd $tmpSync
-	git init &> /dev/null && git remote add origin $myGit &> /dev/null
-	cd -
+	$connectRemote
 fi
 
 if [ ! -d $dirCfg ]
