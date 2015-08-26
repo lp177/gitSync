@@ -16,6 +16,7 @@ then
 	addr=$addr$REPLY"/"
 	read -p "Git repository name for sync:"
 	echo
-	addr=$REPLY".git'"
-	sed -i "0s|.*|$addr|" $PATH_TRY
+	addr=$addr$REPLY".git'"
+#echo "ADDR="$addr" PATH="$PATH_TRY
+	sed -i '1s|.*|'$addr'|' $PATH_TRY
 fi
