@@ -30,10 +30,7 @@ previousSync="
 	cp $HOME/.vimrc $dirCfg/.
 	cp $HOME/.zshrc $dirCfg/.
 	cp $gitSyncPath/gitSync.sh $dirCfg/.
-	if [ -f $HOME/.z42.sh ]; then
-		cp $HOME/.z42.sh $dirCfg/.
-		cp $HOME/.start.sh $dirCfg/.
-	fi
+	cp $HOME/.*.sh $dirCfg/.
 "
 
 #Command sh execute at the end of alias gitTake
