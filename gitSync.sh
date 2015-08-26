@@ -1,8 +1,9 @@
+myGit="https://github.com/lp177/42.git"
+
 set -e
 
 ###Personal informations (you need to set him):
 
-myGit="https://github.com/lp177/42.git"
 #Dir wanted for Sync
 dirSync="$HOME/Sync"
 #Dir wanted for save config files
