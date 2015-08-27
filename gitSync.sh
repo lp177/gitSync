@@ -22,11 +22,11 @@ interval_auto_sync=60
 previousSync="
 	if [ -d $HOME/.atom ]; then
 		rm -rf $dirCfg/.atom
-		cp -pXRf $HOME/.atom $dirCfg/.atom
+		cp -pRf $HOME/.atom $dirCfg/.atom
 	fi
 	if [ -d $HOME/.vim ]; then
 		rm -rf $dirCfg/.vim
-		cp -pXRf $HOME/.vim $dirCfg/.vim
+		cp -pRf $HOME/.vim $dirCfg/.vim
 	fi
 	cp $HOME/.vimrc $dirCfg/.
 	cp $HOME/.zshrc $dirCfg/.
@@ -117,7 +117,7 @@ alias gitSyncUninstall="
 
 alias gitSync="
 	$previousSync
-	rsync -av $dirSync --delete $tmpSync
+	rsync -a $dirSync/ --delete $tmpSync/
 	cd $tmpSync
 	find */ -name .git | sed 's/\/\//\//' | xargs git rm -rf --ignore-unmatch
 	find */ -name .git | sed 's/\/\//\//' | xargs rm -rf
