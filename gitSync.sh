@@ -23,7 +23,7 @@ preserveGuest="$dirSync/.preserveGuest"
 interval_auto_sync=60
 
 # Target Cfg
-favoris="$HOME/.zshrc
+favorites="$HOME/.zshrc
 $HOME/.vimrc
 $HOME/.vim
 $HOME/.atom
@@ -75,21 +75,21 @@ function extractItem
 }
 function saveMyCfg
 {
-	for conf in $favoris
+	for conf in $favorites
 	do
 		extractItem "$conf" "$dirCfg"
 	done
 }
 function getCfg
 {
-	for conf in $favoris
+	for conf in $favorites
 	do
 		extractItem "$dirCfg/$(basename $conf)" "$HOME"
 	done
 }
 function extractGuest
 {
-	for conf in $favoris
+	for conf in $favorites
 	do
 		extractItem "$conf" "$preserveGuest"
 	done
@@ -102,7 +102,7 @@ function uninfect
 	echo
 	if [[ "$REPLY" =~ ^[Yy]$ ]]
 	then
-		for conf in $favoris
+		for conf in $favorites
 		do
 			extractItem "$preserveGuest/$(basename $conf)" "$HOME"
 		done
@@ -176,6 +176,7 @@ alias gitSyncClean="
 	rm -rf $HOME/.ssh/known_hosts.old
 	$uninfect
 	rm -rf $tmpSync $dirSync
+	gitSyncUninstall
 	exit
 "
 
