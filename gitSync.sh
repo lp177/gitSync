@@ -1,4 +1,5 @@
-myGit="https://github.com/lp177/42.git"
+#!/bin/bash
+myGit='https://github.com/lp177/42.git'
 
 set -e
 
