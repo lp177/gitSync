@@ -32,20 +32,20 @@ nc="\033[0m"
 
 function extractItem
 {
-	if [ ! -z "$1" ] ||  \( [ ! -f "$1" ] && [ ! -d "$1" ] \); then
+	if [ -z "$1" ] ||  ( [ ! -f "$1" ] && [ ! -d "$1" ] ); then
 		return 0
 	fi
 	
-	local -i target=$(basename "$1")
+	local -i target="$(basename $1)"
 	
-	if [ ! -z "$2" ]
+	if [ -z "$2" ]
 	then
 		local -i $saveFolder="$tmp"
 	else
 		local -i $saveFolder="$2"
 	fi
 	
-	if [ $archiver -eq 1 ] && \( [ -f "$saveFolder/$target" ] || [ -d "$saveFolder/$target" ] \)
+	if [ $archiver -eq 1 ] && ( [ -f "$saveFolder/$target" ] || [ -d "$saveFolder/$target" ] )
 	then
 		cp -R "$saveFolder/$target" "$saveFolder/_$target"
 	fi
@@ -64,14 +64,25 @@ function extractItem
 		cp "$1" > "$saveFolder/$target"
 	fi
 }
+confItems="$HOME/.zshrc
+$HOME/.vimrc
+$HOME/.vim
+$HOME/.atom
+$HOME/gitSync.sh
+$HOME/.*.sh
+"
 function saveMyCfg
 {
-	extractItem "$HOME/.zshrc" "$dirCfg"
-	extractItem "$HOME/.vimrc" "$dirCfg"
-	extractItem "$HOME/.vim" "$dirCfg"
-	extractItem "$HOME/.atom" "$dirCfg"
-	extractItem "$HOME/gitSync.sh" "$dirCfg"
-	extractItem "$HOME/.*.sh" "$dirCfg"
+	for conf in $confItems
+	do
+		extractItem $conf "$dirCfg"
+	done
+	# extractItem "$HOME/.zshrc" "$dirCfg"
+	# extractItem "$HOME/.vimrc" "$dirCfg"
+	# extractItem "$HOME/.vim" "$dirCfg"
+	# extractItem "$HOME/.atom" "$dirCfg"
+	# extractItem "$HOME/gitSync.sh" "$dirCfg"
+	# extractItem "$HOME/.*.sh" "$dirCfg"
 }
 function getCfg
 {
@@ -179,7 +190,7 @@ alias gitSyncUninstall="
 
 function createFolder
 {
-	if [ ! -z "$1" ]; then
+	if [ -z "$1" ] || [ -d "$1" ]; then
 		return 0
 	fi
 	mkdir $1 &> /dev/null
