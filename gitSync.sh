@@ -10,67 +10,161 @@ dirSync="$HOME/Sync"
 dirCfg="$dirSync/Cfg"
 #Dir target for temporary storage
 tmpSync="$HOME/.gitSync/ExtSync"
+#Dir tmp for default path when not precise
+tmp="$dirSync/.tmp"
 #path for gitSync files
 gitSyncPath="$HOME/.gitSync"
+#Make one save of last archive for configFile/Guest files with _ prefixe.
+#Set at 0 for disable
+archiver=1
+#Path to cp guest config previous infect him
+preserveGuest="$dirSync/.preserveGuest"
 #interval in second into two auto sync (after launch cmd gitAutoSync)
 interval_auto_sync=60
 
-
+# Colors
+red=\033[0;31m
+green=\033[1;32m
+nc=\033[0m
 ###Routines:
 
 #Command sh execute previous the save on git with gitSync alias (for save various scattered files/folders)
-previousSync="
-	if [ -d $HOME/.atom ]; then
-		rsync -a $HOME/.atom --delete $dirCfg/.atom
+
+function extractFile
+{
+	if [ ! -z "$1" ] || [ ! -f "$1" ]; then
+		return 0
 	fi
-	if [ -d $HOME/.vim ]; then
-		rsync -a $HOME/.vim --delete $dirCfg/.vim
+	
+	local -i target=$(basename "$1")
+	
+	if [ ! -z "$2" ]
+		local -i $saveFolder="$dirSync/$tmp"
+	else
+		local -i $saveFolder="$dirSync/$2"
 	fi
-	cp $HOME/.vimrc $dirCfg/.
-	cp $HOME/.zshrc $dirCfg/.
-	cp $gitSyncPath/gitSync.sh $dirCfg/.
-	cp $HOME/.*.sh $dirCfg/.
-"
+	
+	if [ $archiver -eq 1 ] && [ -f "$saveFolder/$target" ]
+	then
+		mv "$saveFolder/$target" "$saveFolder/_$target"
+	fi
+	cat "$1" > "$saveFolder/$target"
+}
+function extractFolder
+{
+	if [ ! -z "$1" ] || [ ! -d "$1" ]; then
+		return 0
+	fi
+	
+	local -i target=$(basename "$1")
+
+	if [ ! -z "$2" ]
+		local -i $saveFolder="$dirSync/$tmp"
+	else
+		local -i $saveFolder="$dirSync/$2"
+	fi
+
+	if [ $archiver -eq 1 ] && [ -d "$saveFolder/$target" ]
+	then
+		cp -R "$saveFolder/$target" "$saveFolder/_$target"
+		rsync -a "$1"/ --delete "$saveFolder/$target/"
+	else
+		rm -rf "$saveFolder/$target"
+		cp -R "$1" "$saveFolder/$target"
+	fi
+}
+function getFile
+{
+	if [ ! -z "$1" ] || [ ! -f "$1" ]; then
+		return 0
+	fi
+	
+	local -i target=$(basename "$1")
+
+	if [ ! -z "$2" ]
+		local -i $saveFolder="$HOME"
+	else
+		local -i $saveFolder="$2"
+	fi
+
+	cat "$1" > "$saveFolder/$target"
+}
+function getFolder
+{
+	if [ ! -z "$1" ] || [ ! -d "$1" ]; then
+		return 0
+	fi
+	
+	local -i target=$(basename "$1")
+
+	if [ ! -z "$2" ]
+		local -i $saveFolder="$HOME"
+	else
+		local -i $saveFolder="$2"
+	fi
+
+	if [ -d "$saveFolder/$target" ]
+	then
+		rsync -a "$1"/ --delete "$saveFolder/$target/"
+	else
+		cp -R "$1" "$saveFolder/$target"
+	fi
+}
+function extractGuest
+{
+	local -i target=$(basename "$preserveGuest")
+
+	extractFile "$HOME/.zshrc" "$target"
+	extractFile "$HOME/.vimrc" "$target"
+	extractFolder "$HOME/.vim" "$target"
+	extractFolder "$HOME/.atom" "$target"
+}
+function saveMyCfg
+{
+	extractFile "$HOME/.zshrc" "Cfg"
+	extractFile "$HOME/.vimrc" "Cfg"
+	extractFile "$HOME/gitSync.sh" "Cfg"
+	extractFolder "$HOME/.vim" "Cfg"
+	extractFolder "$HOME/.atom" "Cfg"
+	extractFile "$HOME/.*.sh" "Cfg"
+}
+function getCfg
+{
+	getFile "$HOME/.zshrc"
+	getFile "$HOME/.vimrc"
+	getFile "$HOME/gitSync.sh"
+	getFolder "$HOME/.vim"
+	getFolder "$HOME/.atom"
+	getFile "$HOME/.*.sh"
+}
 
 #Command sh execute at the end of alias gitTake
 afterTake="$infect"
 
-#swapper of cfg
-preserveHolder="
-	mkdir $dirSync/.preserveHolder
-	cat $HOME/.zshrc > $dirSync/.preserveHolder/.zshrc
-	cat $HOME/.vimrc > $dirSync/.preserveHolder/.vimrc
-	rm -rf $dirSync/.preserveHolder/.vim
-	cp -R $HOME/.vim $dirSync/.preserveHolder/.vim
-"
-getHolder="
-	if [ -d $dirSync/.preserveHolder ]
+uninfect="
+	if [ -d $dirSync/.preserveGuest ]
 	then
-		cat $dirSync/.preserveHolder/.zshrc > $HOME/.zshrc
-		cat $dirSync/.preserveHolder/.vimrc > $HOME/.vimrc
-		rm -rf $HOME/.vim
-		cp -R $dirSync/.preserveHolder/.vim $HOME/.vim
+		cat $dirSync/.preserveGuest/.zshrc > $HOME/.zshrc
+		cat $dirSync/.preserveGuest/.vimrc > $HOME/.vimrc
+		if [ -d $HOME/.vim ]
+		then
+			rsync -a $dirSync/.preserveGuest/.vim/ --delete $HOME/.vim/
+		else
+			rm -rf $HOME/.vim
+			cp -R $dirSync/.preserveGuest/.vim $HOME/.vim
+		fi
 	fi
 "
 #get your cfg on lambda device in preserve all switched files
 infect="
-	$preserveHolder
 	read -p 'Do you want infect \( the actual cfg is already save \) ?' -n 1 -r
 	echo
 	if [[ $REPLY =~ ^[Yy]$ ]]
 	then
-		rm -rf $HOME/.vim
-		cp -R $dirCfg/.vim $HOME/.vim
-		cat $dirCfg/.vimrc > $HOME/.vimrc
-		if [ ! -d $gitSyncPath ]; then
-			cp -R $dirCfg/.gitSync > $gitSyncPath
-		fi
-		cat $dirCfg/.zshrc > $HOME/.zshrc
+	
+		extractGuest
 		source $HOME/.zshrc
 	fi
-"
-uninfect="
-	$getHolder
 "
 #For use always the given $myGit path
 updateRemote="
@@ -91,30 +185,8 @@ connectRemote="
 
 ###Alias:
 
-#Get your git depot to local $dirSync
-# /!\ Delete the holdest $dirSync & $tmpSync path given at the top of this file
-alias gitTake="
-	rm -rf $tmpSync $dirSync
-	git clone $myGit $tmpSync
-	cp -R $tmpSync $dirSync
-	rm -rf $dirSync/.git
-	$afterTake
-"
-
-alias gitClean="
-	ssh-keygen -R $myGit
-	rm -rf $HOME/.ssh/known_hosts.old
-	$uninfect
-	rm -rf $tmpSync $dirSync
-	source $HOME/.zshrc
-"
-
-alias gitSyncUninstall="
-	$gitSyncPath/uninstaller $gitSyncPath $dirSync
-"
-
 alias gitSync="
-	$previousSync
+	saveCfg
 	rsync -a $dirSync/ --delete $tmpSync/
 	cd $tmpSync
 	find */ -name .git | sed 's/\/\//\//' | xargs git rm -rf --ignore-unmatch
@@ -126,24 +198,8 @@ alias gitSync="
 	cd -
 "
 
-#alias gs="gitSync"
-
-#Rm all & push
-alias gitReset="
-	cd $tmpSync
-	git pull
-	git pull origin master
-	git pull
-	git commit -am \"reset\"
-	git push origin master
-	git rm -rf *;rm -rf *
-	git push origin master
-	cd -
-	gitSync
-"
-
 #Launch auto gitSync all interval_auto_sync seconde(s) (not require cron)
-alias gitAutoSync="
+alias gitSyncAuto="
 	echo \"Start at: \";date;echo \"\n\"
 	gitSync
 	echo \"\n\nEnd at: \"
@@ -154,34 +210,62 @@ alias gitAutoSync="
 	source $gitSyncPath/cronErsatz
 "
 
+#Get your git depot to local $dirSync
+# /!\ Delete the holdest $dirSync & $tmpSync path given at the top of this file
+alias gitSyncTake="
+	rm -rf $tmpSync $dirSync
+	git clone $myGit $tmpSync
+	cp -R $tmpSync $dirSync
+	rm -rf $dirSync/.git
+	$afterTake
+"
+
+#/!\ Delete all trace of gitSync
+alias gitSyncClean="
+	ssh-keygen -R $myGit
+	rm -rf $HOME/.ssh/known_hosts.old
+	$uninfect
+	rm -rf $tmpSync $dirSync
+	exit
+"
+
+alias gitSyncUninstall="
+	$gitSyncPath/uninstaller $gitSyncPath $dirSync
+"
+
 ###
 
 ###Create busy files if necessary
 
 #set -x
 
-if [ ! -d $dirSync ]
-then
-	echo "Create Dir Sync at $dirSync"
-	mkdir $dirSync &> /dev/null
-fi
+function createDir
+{
+	if [ ! -z "$1" ] || [ ! -d "$1" ]; then
+		return 0
+	fi
+	mkdir $1 &> /dev/null
+	if [ -d $1 ]; then
+		echo "$green Create Dir $(basename $1) at $1$nc"
+	else
+		echo "$red Fail to create Dir $(basename $1) at $1$nc"
+	fi
+}
 
-if [ ! -d $tmpSync ]
-then
-	echo "Create Dir tmpSync at $tmpSync"
-	mkdir $tmpSync &> /dev/null
-	$connectRemote
-fi
-
-if [ ! -d $dirCfg ]
-then
-	echo "Create Dir dirCfg at $dirCfg"
-	mkdir $dirCfg &> /dev/null
-fi
+createDir $dirSync
+createDir $tmpSync
+createDir $dirCfg
+createDir $preserveGuest
+createDir $tmp
 
 if [ ! -f $gitSyncPath/.cronErsatz ]
 then
 	echo "source $gitSyncPath/gitSync.sh 2> /dev/null;\`gitAutoSync\`" > $gitSyncPath/cronErsatz
+	if [ -f $1 ]; then
+		echo "$green Create cronErsatz at $gitSyncPath/cronErsatz$nc"
+	else
+		echo "$red Fail to create cronErsatz at $gitSyncPath/cronErsatz$nc"
+	fi
 fi
 
 #set +x
