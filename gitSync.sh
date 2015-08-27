@@ -21,12 +21,10 @@ interval_auto_sync=60
 #Command sh execute previous the save on git with gitSync alias (for save various scattered files/folders)
 previousSync="
 	if [ -d $HOME/.atom ]; then
-		rm -rf $dirCfg/.atom
-		cp -pRf $HOME/.atom $dirCfg/.atom
+		rsync -a $HOME/.atom --delete $dirCfg/.atom
 	fi
 	if [ -d $HOME/.vim ]; then
-		rm -rf $dirCfg/.vim
-		cp -pRf $HOME/.vim $dirCfg/.vim
+		rsync -a $HOME/.vim --delete $dirCfg/.vim
 	fi
 	cp $HOME/.vimrc $dirCfg/.
 	cp $HOME/.zshrc $dirCfg/.
