@@ -22,6 +22,15 @@ preserveGuest="$dirSync/.preserveGuest"
 #interval in second into two auto sync (after launch cmd gitAutoSync)
 interval_auto_sync=60
 
+# Target Cfg
+favoris="$HOME/.zshrc
+$HOME/.vimrc
+$HOME/.vim
+$HOME/.atom
+$HOME/.gitSync
+$HOME/.*.sh
+"
+
 # Colors
 red="\033[0;31m"
 green="\033[1;32m"
@@ -56,7 +65,7 @@ function extractItem
 	then
 		if [ -d "$saveFolder/$target" ]
 		then
-			rsync -a "$1"/ --delete "$saveFolder/$target/"
+			rsync -a "$1"/ --delete --exclude '.git' "$saveFolder/$target/"
 		else
 			cp -R "$1" "$saveFolder/$target"
 		fi
@@ -64,50 +73,40 @@ function extractItem
 		cp "$1" > "$saveFolder/$target"
 	fi
 }
-confItems="$HOME/.zshrc
-$HOME/.vimrc
-$HOME/.vim
-$HOME/.atom
-$HOME/gitSync.sh
-$HOME/.*.sh
-"
 function saveMyCfg
 {
-	for conf in $confItems
+	for conf in $favoris
 	do
-		extractItem $conf "$dirCfg"
+		extractItem "$conf" "$dirCfg"
 	done
-	# extractItem "$HOME/.zshrc" "$dirCfg"
-	# extractItem "$HOME/.vimrc" "$dirCfg"
-	# extractItem "$HOME/.vim" "$dirCfg"
-	# extractItem "$HOME/.atom" "$dirCfg"
-	# extractItem "$HOME/gitSync.sh" "$dirCfg"
-	# extractItem "$HOME/.*.sh" "$dirCfg"
 }
 function getCfg
 {
-	extractItem "$dirCfg/.zshrc" "$HOME"
-	extractItem "$dirCfg/.vimrc" "$HOME"
-	extractItem "$dirCfg/.vim" "$HOME"
-	extractItem "$dirCfg/.atom" "$HOME"
-	extractItem "$dirCfg/.*.sh" "$HOME"
+	for conf in $favoris
+	do
+		extractItem "$dirCfg/$(basename $conf)" "$HOME"
+	done
 }
 function extractGuest
 {
-	extractItem "$HOME/.zshrc" "$preserveGuest"
-	extractItem "$HOME/.vimrc" "$preserveGuest"
-	extractItem "$HOME/.vim" "$preserveGuest"
-	extractItem "$HOME/.atom" "$preserveGuest"
-	extractItem "$HOME/.*.sh" "$preserveGuest"
+	for conf in $favoris
+	do
+		extractItem "$conf" "$preserveGuest"
+	done
 }
 # Reinitialise configuration of guest from $preserveGuest folder
 function uninfect
 {
-	extractItem "$preserveGuest/.zshrc" "$HOME"
-	extractItem "$preserveGuest/.vimrc" "$HOME"
-	extractItem "$preserveGuest/.vim" "$HOME"
-	extractItem "$preserveGuest/.atom" "$HOME"
-	extractItem "$preserveGuest/.*.sh" "$HOME"
+	echo 'Do you want uninfect ?\n'
+	read -p 'Reset guest cfg in $preserveGuest folder (y/n):' -n 1 -r
+	echo
+	if [[ "$REPLY" =~ ^[Yy]$ ]]
+	then
+		for conf in $favoris
+		do
+			extractItem "$preserveGuest/$(basename $conf)" "$HOME"
+		done
+	fi
 }
 # Load your cfg on guest device and preserve guest cfg in $preserveGuest folder
 function infect
@@ -142,8 +141,9 @@ function updateRemote
 ###Alias:
 
 alias gitSync="
+	echo 'In progress...'
 	saveMyCfg
-	rsync -a $dirSync/ --delete $tmpSync/
+	rsync -a $dirSync/ --delete --exclude '.git' $tmpSync/
 	updateRemote
 "
 
@@ -171,6 +171,7 @@ alias gitSyncTake="
 
 #/!\ Delete all trace of gitSync
 alias gitSyncClean="
+	uninfect
 	ssh-keygen -R $myGit
 	rm -rf $HOME/.ssh/known_hosts.old
 	$uninfect
