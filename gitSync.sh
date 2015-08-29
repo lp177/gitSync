@@ -45,7 +45,7 @@ function extractItem
 	if [ -z "$1" ] ||  ( [ ! -f "$1" ] && [ ! -d "$1" ] ); then
 		return 0
 	fi
-	
+
 	local -i target="$(basename $1)"
 	
 	if [ -z "$2" ]
@@ -66,8 +66,10 @@ function extractItem
 	then
 		if [ -d "$saveFolder/$target" ]
 		then
-			rsync -a "$1"/ --delete --exclude '.git' "$saveFolder/$target/"
+			echo "Rsync $1"
+			rsync -a "$1/"/ --delete --exclude '.git' "$saveFolder/$target/"
 		else
+			echo "Cp $1"
 			cp -R "$1" "$saveFolder/$target"
 		fi
 	else
@@ -180,7 +182,7 @@ alias gitSyncClean="
 	gitSyncUninstall
 	exit
 "
-
+# Uninstaller
 alias gitSyncUninstall="
 	$gitSyncPath/uninstaller $gitSyncPath $dirSync
 "
@@ -196,7 +198,7 @@ function createFolder
 	if [ -z "$1" ] || [ -d "$1" ]; then
 		return 0
 	fi
-	mkdir $1 &> /dev/null
+	mkdir $1# &> /dev/null
 	if [ -d $1 ]; then
 		echo "$green Create Dir $(basename $1) at $1$nc"
 	else
