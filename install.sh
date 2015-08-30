@@ -26,4 +26,4 @@ read -p "Git repository name for sync:" -r
 echo
 addr="myGit='$addr$REPLY.git'"
 #echo "ADDR="$addr" PATH="$PATH_TRY
-sed -i '' '2s|.*|'$addr'|' "$PATH_TRY"
+sed -i '2s|.*|'"$addr"'|' "$PATH_TRY"
