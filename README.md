@@ -9,5 +9,3 @@ git clone https://github.com/lp177/gitSync.git ~/.gitSync
 echo "\nsource ~/.gitSync/gitSync.sh" >> ~/.zshrc  
 bash ~/.gitSync/install.sh  
 source ~/.zshrc  
-  
-  
