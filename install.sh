@@ -16,6 +16,15 @@ then
 	return 0
 fi
 
+grep 'gitSync' $HOME/.zshrc > /dev/null 2>&1
+retval=$?
+if [ "$retval" = 0 ]
+then
+	echo "ok"
+else
+	echo "NOK"
+fi
+
 read -p "Git server (https://github.com for syntax exemple):" -r
 echo
 addr="$REPLY/"
