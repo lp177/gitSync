@@ -5,4 +5,3 @@
 
 git clone https://github.com/lp177/gitSync.git ~/.gitSync  
 bash ~/.gitSync/install.sh  
-source ~/.zshrc  
